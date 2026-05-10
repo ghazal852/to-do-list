@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المهام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">✅</div>
+        <span class="sidebar-title">مهامي</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="home.html"       class="nav-link active"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+        <a href="team-tasks.html" class="nav-link"><span class="nav-icon">👥</span><span>مهام الفريق</span></a>
+        <a href="chatbot.html"    class="nav-link"><span class="nav-icon">🤖</span><span>شات بوت</span></a>
+        <a href="profile.html"    class="nav-link"><span class="nav-icon">👤</span><span>ملفي الشخصي</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <label class="dark-toggle">
+            <input type="checkbox" id="darkmode-toggle" onchange="toggleDark()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span>وضع مظلم</span>
+        </label>
+    </div>
+</aside>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+</button>
+
+<main class="main" id="main">
+
+    <header class="topbar">
+        <div>
+            <h1 class="page-title">إدارة المهام</h1>
+            <p class="page-date" id="today-date"></p>
+        </div>
+        <div class="topbar-actions">
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" id="search-input" placeholder="ابحث عن مهمة..." oninput="renderAll()">
+            </div>
+            <button class="btn-new-task" onclick="openModal()">+ مهمة جديدة</button>
+        </div>
+    </header>
+
+    <section class="progress-section">
+        <div class="progress-info">
+            <span>نسبة الإنجاز الكلية</span>
+            <span id="progress-label">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </section>
+
+    <section class="stats-row">
+        <div class="stat-card"><div class="stat-number" id="stat-today">0</div><div class="stat-label">مهام اليوم</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-week">0</div><div class="stat-label">مهام الأسبوع</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-done">0</div><div class="stat-label">مكتملة</div></div>
+        <div class="stat-card urgent-stat"><div class="stat-number" id="stat-urgent">0</div><div class="stat-label">عاجلة 🔴</div></div>
+    </section>
+
+    <section class="controls-row">
+        <div class="sort-group">
+            <label>ترتيب:</label>
+            <select id="sort-select" onchange="renderAll()" class="task-select">
+                <option value="deadline">حسب الموعد</option>
+                <option value="priority">حسب الأولوية</option>
+                <option value="date">حسب الإضافة</option>
+                <option value="completed">مكتمل أولاً</option>
+            </select>
+        </div>
+        <div class="filter-pills">
+            <button class="pill active" onclick="setFilter('all',this)">الكل</button>
+            <button class="pill" onclick="setFilter('today',this)">اليوم</button>
+            <button class="pill" onclick="setFilter('week',this)">الأسبوع</button>
+            <button class="pill" onclick="setFilter('month',this)">الشهر</button>
+        </div>
+        <button class="btn-delete-done" onclick="deleteDone()">🗑 حذف المكتملة</button>
+    </section>
+
+    <section class="tasks-grid">
+        <div class="task-column">
+            <div class="column-header today-header"><span>📅 مهام اليوم</span><span class="badge" id="badge-today">0</span></div>
+            <ul class="task-list" id="list-today"></ul>
+        </div>
+        <div class="task-column">
+            <div class="column-header week-header"><span>📆 مهام الأسبوع</span><span class="badge" id="badge-week">0</span></div>
+            <ul class="task-list" id="list-week"></ul>
+        </div>
+        <div class="task-column">
+            <div class="column-header month-header"><span>🗓 مهام الشهر</span><span class="badge" id="badge-month">0</span></div>
+            <ul class="task-list" id="list-month"></ul>
+        </div>
+    </section>
+
+    <!-- Calendar -->
+    <section class="calendar-section">
+        <div class="section-header">
+            <h2>📅 التقويم</h2>
+            <div class="cal-nav">
+                <button onclick="prevMonth()">‹</button>
+                <span id="cal-label"></span>
+                <button onclick="nextMonth()">›</button>
+            </div>
+        </div>
+        <div class="calendar-grid">
+            <div class="cal-weekday">أحد</div>
+            <div class="cal-weekday">إثن</div>
+            <div class="cal-weekday">ثلا</div>
+            <div class="cal-weekday">أرب</div>
+            <div class="cal-weekday">خمي</div>
+            <div class="cal-weekday">جمع</div>
+            <div class="cal-weekday">سبت</div>
+        </div>
+        <div class="calendar-days" id="calendar-days"></div>
+    </section>
+
+    <section class="bottom-row">
+        <div class="bottom-card">
+            <h3>🤝 مهام مشتركة</h3>
+            <div class="bottom-form">
+                <input type="text" placeholder="أدخل كود المشاركة" class="task-input">
+                <button class="btn-add">إضافة</button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ADD TASK MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <div class="modal-icon">✏️</div>
+                <h2>مهمة جديدة</h2>
+            </div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label class="form-label">اسم المهمة <span class="req">*</span></label>
+                <input type="text" id="m-name" class="m-input" placeholder="مثال: تسليم تقرير المشروع...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">تاريخ التسليم <span class="req">*</span></label>
+                <input type="date" id="m-deadline" class="m-input" onchange="aiDetectPeriod()">
+                <!-- AI period detection badge -->
+                <div class="ai-period-badge" id="ai-period-badge" style="display:none;">
+                    <span class="ai-badge-icon">🤖</span>
+                    <span id="ai-period-text"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">الأولوية</label>
+                <div class="priority-selector">
+                    <label class="p-option">
+                        <input type="radio" name="m-priority" value="high">
+                        <div class="p-card p-high">
+                            <div class="p-icon">🔴</div>
+                            <div class="p-name">عالية</div>
+                            <div class="p-desc">عاجل ومهم</div>
+                        </div>
+                    </label>
+                    <label class="p-option">
+                        <input type="radio" name="m-priority" value="medium" checked>
+                        <div class="p-card p-medium">
+                            <div class="p-icon">🟡</div>
+                            <div class="p-name">متوسطة</div>
+                            <div class="p-desc">مهم غير عاجل</div>
+                        </div>
+                    </label>
+                    <label class="p-option">
+                        <input type="radio" name="m-priority" value="low">
+                        <div class="p-card p-low">
+                            <div class="p-icon">🟢</div>
+                            <div class="p-name">منخفضة</div>
+                            <div class="p-desc">يمكن تأجيله</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">وصف (اختياري)</label>
+                <textarea id="m-desc" class="m-input m-textarea" placeholder="أضف تفاصيل أو ملاحظات..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">المرفقات</label>
+                <label class="file-drop" id="file-drop">
+                    <input type="file" id="m-files" multiple onchange="previewFiles()">
+                    <div class="file-drop-inner">
+                        <span class="file-drop-icon">📎</span>
+                        <span class="file-drop-text">اسحب الملفات هنا أو <u>انقر للاختيار</u></span>
+                        <span class="file-drop-sub">PNG · PDF · DOCX · XLSX وغيرها</span>
+                    </div>
+                </label>
+                <div class="file-preview" id="file-preview"></div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+            <button class="btn-save" onclick="addTask()">حفظ المهمة ✓</button>
+        </div>
+    </div>
+</div>
+
+<!-- CALENDAR TASK DETAIL PANEL -->
+<div class="cal-detail-overlay" id="cal-detail-overlay" onclick="closeCalDetail(event)">
+    <div class="cal-detail-panel" id="cal-detail-panel">
+        <div class="cal-detail-header">
+            <div class="cal-detail-date" id="cal-detail-date"></div>
+            <button class="cal-detail-close" onclick="closeCalDetailBtn()">✕</button>
+        </div>
+        <div class="cal-detail-tasks" id="cal-detail-tasks"></div>
+        <div class="cal-detail-footer">
+            <button class="btn-add-cal" onclick="closeCalDetailBtn(); openModal();">+ إضافة مهمة</button>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip (hover only) -->
+<div class="cal-tooltip" id="cal-tooltip"></div>
+
+<!-- ✅ db.js أولاً دائماً — يحمّل بيانات الحساب الصحيح -->
+<script src="db.js"></script>
+<script src="home.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Bot</title>
+
+    <link rel="stylesheet" href="chatbot.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="shortcut icon" href="images/gemini.svg" type="image/x-icon">
+</head>
+<body>
+    <section>
+        <div class="container">
+
+            <!-- زر الرجوع -->
+            <div class="top-bar">
+                <a href="home.html" class="btn-back">
+                    &#8594; الرئيسية
+                </a>
+                <div class="header-center">
+                    <h1>AI Chat Bot</h1>
+                    <p>مساعدك الذكي لإدارة المهام</p>
+                </div>
+                <div style="width:120px;"></div><!-- spacer -->
+            </div>
+
+            <!-- أوامر سريعة -->
+            <div class="quick-cmds">
+                <span class="quick-label">💡 جرب:</span>
+                <button class="quick-btn" onclick="sendQuick('اعرض مهامي')">📋 اعرض مهامي</button>
+                <button class="quick-btn" onclick="sendQuick('أضف مهمة: تسليم التقرير')">➕ أضف مهمة</button>
+                <button class="quick-btn" onclick="sendQuick('احذف المهام المكتملة')">🗑 حذف المكتملة</button>
+            </div>
+
+            <!-- قائمة الشات -->
+            <div class="chat_list"></div>
+
+            <!-- فورم الإرسال -->
+            <form action="#" class="typing_form">
+                <div class="input_wrapper">
+                    <input
+                        type="text"
+                        class="typing_input"
+                        name="prompt"
+                        placeholder="اكتب رسالتك... مثال: أضف مهمة: تسليم التقرير"
+                        required
+                    >
+                    <button type="submit" class="material-symbols-outlined">send</button>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <script src="db.js"></script>
+    <script src="chatbot.js"></script>
+</body>
+</html>

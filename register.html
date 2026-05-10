@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="logIn.css">
+    <style>
+        .card { max-width: 480px; }
+
+        .avatar-upload-row {
+            display: flex; align-items: center; gap: 16px;
+            margin-bottom: 4px;
+        }
+        .avatar-preview {
+            width: 72px; height: 72px; border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--green);
+            background: var(--input-bg);
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; color: var(--muted);
+            overflow: hidden;
+        }
+        .avatar-preview img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:none; }
+
+        .btn-upload-avatar {
+            flex: 1; padding: 10px 14px;
+            background: transparent; border: 1.5px dashed var(--border);
+            border-radius: 10px; color: var(--muted);
+            font-family: 'Tajawal', sans-serif; font-size: 14px;
+            cursor: pointer; text-align: center;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-upload-avatar:hover { border-color: var(--green); color: var(--green); }
+
+        .form-grid-2 {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+        }
+        @media (max-width: 480px) { .form-grid-2 { grid-template-columns: 1fr; } }
+
+        .optional-tag {
+            font-size: 11px; color: var(--muted);
+            background: rgba(148,163,184,0.15);
+            padding: 1px 7px; border-radius: 999px;
+            margin-right: 4px;
+        }
+
+        .strength-bar { height:4px; background:var(--border); border-radius:999px; margin-top:6px; overflow:hidden; }
+        .strength-fill { height:100%; width:0%; border-radius:999px; transition:width 0.3s, background 0.3s; }
+        .strength-label { font-size:11px; color:var(--muted); margin-top:3px; display:block; }
+
+        .error-msg {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px; padding: 10px 14px;
+            font-size: 13px; color: #f87171;
+            display: none; align-items: center; gap: 8px;
+        }
+        .error-msg.show { display: flex; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">🚀</div>
+    <h2>إنشاء حساب جديد</h2>
+    <p class="subtitle">انضم الآن وابدأ في إدارة مهامك</p>
+
+    <!-- Error Message -->
+    <div class="error-msg" id="error-msg">
+        <span>⚠️</span>
+        <span id="error-text"></span>
+    </div>
+
+    <!-- Avatar Upload -->
+    <div style="margin-bottom: 20px;">
+        <label class="form-label" style="display:block; margin-bottom:8px; font-size:14px; font-weight:500;">
+            الصورة الشخصية <span class="optional-tag">اختياري</span>
+        </label>
+        <div class="avatar-upload-row">
+            <div class="avatar-preview" id="avatar-preview">
+                👤
+                <img id="avatar-img" src="" alt="">
+            </div>
+            <label class="btn-upload-avatar" for="avatar-file">
+                📷 اختر صورة شخصية
+                <input type="file" id="avatar-file" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
+            </label>
+        </div>
+    </div>
+
+    <!-- Name -->
+    <div class="field">
+        <label for="reg-name">الاسم الكامل <span style="color:#ef4444;">*</span></label>
+        <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="reg-name" placeholder="أدخل اسمك الكامل" required>
+        </div>
+    </div>
+
+    <!-- Email -->
+    <div class="field">
+        <label for="reg-email">البريد الإلكتروني <span style="color:#ef4444;">*</span></label>
+        <div class="input-wrapper">
+            <span class="input-icon">📧</span>
+            <input type="email" id="reg-email" placeholder="example@email.com" required>
+        </div>
+    </div>
+
+    <!-- Phone + Birthdate -->
+    <div class="form-grid-2" style="margin-bottom:20px;">
+        <div>
+            <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:500;">
+                رقم الجوال <span class="optional-tag">اختياري</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="input-icon">📱</span>
+                <input type="tel" id="reg-phone" placeholder="+966 5X XXX XXXX">
+            </div>
+        </div>
+        <div>
+            <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:500;">
+                تاريخ الميلاد <span class="optional-tag">اختياري</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="input-icon">🎂</span>
+                <input type="date" id="reg-birthdate">
+            </div>
+        </div>
+    </div>
+
+    <!-- City -->
+    <div class="field">
+        <label for="reg-city">
+            المدينة <span class="optional-tag">اختياري</span>
+        </label>
+        <div class="input-wrapper">
+            <span class="input-icon">🏙</span>
+            <input type="text" id="reg-city" placeholder="مثال: الرياض">
+        </div>
+    </div>
+
+    <!-- Password -->
+    <div class="field">
+        <label for="reg-pass">كلمة المرور <span style="color:#ef4444;">*</span></label>
+        <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-pass" placeholder="أدخل كلمة المرور" oninput="checkStrength()" required>
+            <button type="button" class="toggle-password" onclick="togglePass('reg-pass',this)">👁</button>
+        </div>
+        <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+        </div>
+        <span class="strength-label" id="strength-label"></span>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="field">
+        <label for="reg-confirm">تأكيد كلمة المرور <span style="color:#ef4444;">*</span></label>
+        <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-confirm" placeholder="أعد كتابة كلمة المرور" required>
+            <button type="button" class="toggle-password" onclick="togglePass('reg-confirm',this)">👁</button>
+        </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-primary" onclick="handleRegister()">إنشاء الحساب ✓</button>
+
+    <p class="register-link" style="margin-top:20px;">
+        لديك حساب بالفعل؟ <a href="logIn.html">تسجيل الدخول</a>
+    </p>
+</div>
+
+<script src="db.js"></script>
+<script>
+    // ===== Redirect if already logged in =====
+    if (DB.isLoggedIn()) window.location.href = 'home.html';
+
+    let avatarDataURL = '';
+
+    // ===== Avatar Preview =====
+    function previewAvatar(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            avatarDataURL = e.target.result;
+            const img = document.getElementById('avatar-img');
+            const preview = document.getElementById('avatar-preview');
+            img.src = avatarDataURL;
+            img.style.display = 'block';
+            preview.textContent = '';
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ===== Password Strength =====
+    function checkStrength() {
+        const val  = document.getElementById('reg-pass').value;
+        const fill = document.getElementById('strength-fill');
+        const lbl  = document.getElementById('strength-label');
+        let s = 0;
+        if (val.length >= 6)            s++;
+        if (val.length >= 10)           s++;
+        if (/[A-Z]/.test(val))         s++;
+        if (/[0-9]/.test(val))         s++;
+        if (/[^A-Za-z0-9]/.test(val)) s++;
+        const levels = [
+            {pct:'0%',   color:'#e2e8f0', label:''},
+            {pct:'25%',  color:'#ef4444', label:'ضعيفة جداً'},
+            {pct:'50%',  color:'#f59e0b', label:'ضعيفة'},
+            {pct:'70%',  color:'#3b82f6', label:'متوسطة'},
+            {pct:'85%',  color:'#22c55e', label:'قوية'},
+            {pct:'100%', color:'#16a34a', label:'قوية جداً ✅'},
+        ];
+        const lvl = levels[Math.min(s, 5)];
+        fill.style.width      = lvl.pct;
+        fill.style.background = lvl.color;
+        lbl.textContent       = lvl.label;
+        lbl.style.color       = lvl.color;
+    }
+
+    // ===== Toggle Password =====
+    function togglePass(id, btn) {
+        const input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+        btn.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+
+    // ===== Show Error =====
+    function showError(msg) {
+        const el = document.getElementById('error-msg');
+        document.getElementById('error-text').textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 4000);
+    }
+
+    // ===== Register =====
+    function handleRegister() {
+        const name      = document.getElementById('reg-name').value.trim();
+        const email     = document.getElementById('reg-email').value.trim();
+        const phone     = document.getElementById('reg-phone').value.trim();
+        const birthdate = document.getElementById('reg-birthdate').value;
+        const city      = document.getElementById('reg-city').value.trim();
+        const password  = document.getElementById('reg-pass').value;
+        const confirm   = document.getElementById('reg-confirm').value;
+
+        // Validation
+        if (!name)           { showError('الاسم الكامل مطلوب'); return; }
+        if (!email)          { showError('البريد الإلكتروني مطلوب'); return; }
+        if (!email.includes('@')) { showError('صيغة البريد الإلكتروني غير صحيحة'); return; }
+        if (!password)       { showError('كلمة المرور مطلوبة'); return; }
+        if (password.length < 6) { showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return; }
+        if (password !== confirm) { showError('كلمتا المرور غير متطابقتين'); return; }
+
+        // Register via DB
+        const result = DB.register({
+            name, email, password, phone, birthdate, city,
+            avatar: avatarDataURL,
+        });
+
+        if (!result.success) {
+            showError(result.error);
+            return;
+        }
+
+        // Auto-login after register
+        DB.login(email, password);
+        window.location.href = 'home.html';
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">✅</div>
+        <span class="sidebar-title">مهامي</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="home.html"       class="nav-link"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+        <a href="team-tasks.html" class="nav-link"><span class="nav-icon">👥</span><span>مهام الفريق</span></a>
+        <a href="chatbot.html"    class="nav-link"><span class="nav-icon">🤖</span><span>شات بوت</span></a>
+        <a href="profile.html"    class="nav-link active"><span class="nav-icon">👤</span><span>ملفي الشخصي</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <!-- Dark mode toggle -->
+        <label class="dark-toggle">
+            <input type="checkbox" id="darkmode-toggle" onchange="toggleDark()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span>وضع مظلم</span>
+        </label>
+    </div>
+</aside>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+</button>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">الملف الشخصي</h1>
+            <p class="page-sub">إدارة بيانات حسابك الشخصي</p>
+        </div>
+        <button class="btn-logout" onclick="confirmLogout()">
+            <span>🚪</span> تسجيل الخروج
+        </button>
+    </header>
+
+    <div class="profile-grid">
+
+        <!-- LEFT COL -->
+        <div class="left-col">
+
+            <!-- Avatar card -->
+            <div class="card avatar-card">
+                <div class="avatar-ring">
+                    <img src="https://placehold.co/120x120/22c55e/white?text=م" alt="صورة المستخدم" id="avatar-img">
+                    <label class="avatar-change-btn" for="avatar-input" title="تغيير الصورة">
+                        <span>📷</span>
+                        <input type="file" id="avatar-input" accept="image/*" onchange="changeAvatar(event)">
+                    </label>
+                </div>
+                <h2 class="avatar-name"  id="display-name">—</h2>
+                <p class="avatar-email"  id="display-email">—</p>
+                <div class="avatar-badge">✅ حساب نشط</div>
+                <button class="btn-change-photo" onclick="document.getElementById('avatar-input').click()">
+                    🖼 تغيير الصورة الشخصية
+                </button>
+            </div>
+
+            <!-- Notifications card -->
+            <div class="card notif-card">
+                <div class="card-title">🔔 الإشعارات</div>
+                <div class="notif-list">
+                    <div class="notif-row">
+                        <div class="notif-info">
+                            <span class="notif-label">إشعارات المهام</span>
+                            <span class="notif-desc">تنبيه عند اقتراب موعد التسليم</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-tasks" onchange="saveNotif('tasks',this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="notif-row">
+                        <div class="notif-info">
+                            <span class="notif-label">إشعارات الفريق</span>
+                            <span class="notif-desc">تنبيه عند إضافة مهمة مشتركة</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-team" onchange="saveNotif('team',this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="notif-row">
+                        <div class="notif-info">
+                            <span class="notif-label">إشعارات البريد</span>
+                            <span class="notif-desc">استلام تقرير أسبوعي بالبريد</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-email" onchange="saveNotif('email',this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="notif-row">
+                        <div class="notif-info">
+                            <span class="notif-label">إشعارات التطبيق</span>
+                            <span class="notif-desc">إشعارات داخل التطبيق</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="notif-app" onchange="saveNotif('app',this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COL -->
+        <div class="right-col">
+
+            <!-- Personal info -->
+            <div class="card info-card">
+                <div class="card-header-row">
+                    <div class="card-title">👤 المعلومات الشخصية</div>
+                    <button class="btn-edit" id="edit-btn" onclick="toggleEdit()">✏️ تعديل</button>
+                </div>
+                <form id="profile-form" onsubmit="saveProfile(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">الاسم الكامل</label>
+                            <input type="text"  id="fullname"  class="form-input" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">رقم الجوال</label>
+                            <input type="tel"   id="phone"     class="form-input" disabled>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <input type="email" id="email"     class="form-input" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">تاريخ الميلاد</label>
+                            <input type="date"  id="birthdate" class="form-input" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">المدينة</label>
+                            <input type="text"  id="city"      class="form-input" disabled>
+                        </div>
+                    </div>
+                    <div class="form-actions" id="form-actions" style="display:none;">
+                        <button type="button" class="btn-cancel-edit" onclick="cancelEdit()">إلغاء</button>
+                        <button type="submit" class="btn-save">💾 حفظ التغييرات</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Email change -->
+            <div class="card security-card">
+                <div class="card-title">📧 تعديل البريد الإلكتروني</div>
+                <form onsubmit="changeEmail(event)">
+                    <div class="form-group">
+                        <label class="form-label">البريد الحالي</label>
+                        <input type="email" id="current-email-display" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">البريد الجديد</label>
+                        <input type="email" id="new-email" class="form-input" placeholder="أدخل البريد الجديد...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تأكيد البريد الجديد</label>
+                        <input type="email" id="confirm-email" class="form-input" placeholder="أعد كتابة البريد الجديد...">
+                    </div>
+                    <button type="submit" class="btn-save" style="margin-top:4px;">📧 تحديث البريد</button>
+                </form>
+            </div>
+
+            <!-- Password change -->
+            <div class="card security-card">
+                <div class="card-title">🔒 تغيير كلمة المرور</div>
+                <form onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور الحالية</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="current-pass" class="form-input" placeholder="أدخل كلمة المرور الحالية">
+                            <button type="button" class="pass-toggle" onclick="togglePass('current-pass',this)">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">كلمة المرور الجديدة</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="new-pass" class="form-input" placeholder="أدخل كلمة المرور الجديدة">
+                            <button type="button" class="pass-toggle" onclick="togglePass('new-pass',this)">👁</button>
+                        </div>
+                        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+                        <span class="strength-label" id="strength-label"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تأكيد كلمة المرور الجديدة</label>
+                        <div class="pass-wrapper">
+                            <input type="password" id="confirm-pass" class="form-input" placeholder="أعد كتابة كلمة المرور الجديدة">
+                            <button type="button" class="pass-toggle" onclick="togglePass('confirm-pass',this)">👁</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save" style="margin-top:4px;">🔒 تحديث كلمة المرور</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGOUT MODAL -->
+<div class="modal-overlay" id="logout-modal">
+    <div class="modal">
+        <div class="modal-icon">🚪</div>
+        <h3>تسجيل الخروج</h3>
+        <p>هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟</p>
+        <div class="modal-btns">
+            <button class="btn-cancel-edit" onclick="closeModal()">إلغاء</button>
+            <button class="btn-logout-confirm" onclick="logout()">نعم، خروج</button>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ db.js أولاً دائماً -->
+<script src="db.js"></script>
+<script src="profile.js"></script>
+</body>
+</html>

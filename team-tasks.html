@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مهام الفريق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="team-tasks.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">✅</div>
+        <span class="sidebar-title">مهامي</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="home.html"       class="nav-link"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+        <a href="team-tasks.html" class="nav-link active"><span class="nav-icon">👥</span><span>مهام الفريق</span></a>
+        <a href="chatbot.html"    class="nav-link"><span class="nav-icon">🤖</span><span>شات بوت</span></a>
+        <a href="profile.html"    class="nav-link"><span class="nav-icon">👤</span><span>ملفي الشخصي</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <label class="dark-toggle">
+            <input type="checkbox" id="darkmode-toggle" onchange="toggleDark()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span>وضع مظلم</span>
+        </label>
+    </div>
+</aside>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+</button>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+    <header class="page-header">
+        <div>
+            <h1 class="page-title">مهام الفريق</h1>
+            <p class="page-sub" id="tasks-count">0 مهام</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-view" id="view-toggle" onclick="toggleView()">⊞ بطاقات</button>
+            <button class="btn-new" onclick="openModal('add')">+ مهمة جديدة</button>
+        </div>
+    </header>
+
+    <!-- Code bar -->
+    <section class="code-bar">
+        <div class="code-section">
+            <span class="code-label">🔗 مشاركة مهمة بكود</span>
+            <button class="btn-gen-code" onclick="generateCode()">إنشاء كود جديد</button>
+            <div class="code-display" id="code-display" style="display:none;">
+                <span id="generated-code"></span>
+                <button class="btn-copy" onclick="copyCode()">📋 نسخ</button>
+            </div>
+        </div>
+        <div class="code-divider"></div>
+        <div class="code-section">
+            <span class="code-label">📥 إدخال كود مهمة</span>
+            <div class="code-input-row">
+                <input type="text" id="code-input" class="code-input" placeholder="أدخل الكود هنا..." maxlength="8">
+                <button class="btn-join" onclick="joinByCode()">انضمام</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stat-all">0</div><div class="stat-lbl">إجمالي المهام</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-mine">0</div><div class="stat-lbl">مهامي</div></div>
+        <div class="stat-card done-stat"><div class="stat-num" id="stat-done">0</div><div class="stat-lbl">مكتملة</div></div>
+        <div class="stat-card late-stat"><div class="stat-num" id="stat-late">0</div><div class="stat-lbl">متأخرة ⚠️</div></div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls-row">
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" id="search-input" placeholder="ابحث باسم المهمة أو الوصف..." oninput="renderTasks()">
+        </div>
+        <div class="filters">
+            <select id="filter-person"   onchange="renderTasks()" class="filter-select">
+                <option value="all">كل الأشخاص</option>
+                <option value="mine">مهامي فقط</option>
+            </select>
+            <select id="filter-deadline" onchange="renderTasks()" class="filter-select">
+                <option value="all">كل المواعيد</option>
+                <option value="today">اليوم</option>
+                <option value="week">هذا الأسبوع</option>
+                <option value="late">متأخرة</option>
+            </select>
+            <select id="sort-by"         onchange="renderTasks()" class="filter-select">
+                <option value="date-asc">الأقرب تسليماً</option>
+                <option value="date-desc">الأبعد تسليماً</option>
+                <option value="name">الاسم</option>
+            </select>
+        </div>
+    </section>
+
+    <div class="tasks-container" id="tasks-container"></div>
+
+</main>
+
+<!-- ===== ADD/EDIT MODAL ===== -->
+<div class="modal-overlay" id="task-modal" onclick="closeModalOutside(event)">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <div class="modal-icon-wrap">👥</div>
+                <h2 id="modal-title">مهمة جديدة</h2>
+            </div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">اسم المهمة <span class="req">*</span></label>
+                <input type="text" id="m-name" class="m-input" placeholder="أدخل اسم المهمة...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">وصف المهمة</label>
+                <textarea id="m-desc" class="m-input m-textarea" placeholder="أدخل تفاصيل المهمة..."></textarea>
+            </div>
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label class="form-label">موعد التسليم <span class="req">*</span></label>
+                    <input type="date" id="m-deadline" class="m-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الأشخاص المشاركون</label>
+                    <input type="text" id="m-members" class="m-input" placeholder="الأسماء مفصولة بفاصلة...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ملاحظات</label>
+                <textarea id="m-notes" class="m-input m-textarea-sm" placeholder="أي ملاحظات إضافية..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">المرفقات</label>
+                <label class="file-drop" id="file-drop">
+                    <input type="file" id="m-files" multiple onchange="previewFiles()">
+                    <div class="file-drop-inner">
+                        <span class="file-drop-icon">📎</span>
+                        <span class="file-drop-text">اسحب الملفات أو <u>انقر للاختيار</u></span>
+                        <span class="file-drop-sub">PDF · DOCX · PNG · XLSX وغيرها</span>
+                    </div>
+                </label>
+                <div class="file-preview" id="file-preview"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+            <button class="btn-save" id="modal-save-btn" onclick="saveTask()">💾 حفظ المهمة</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="modal-overlay" id="detail-modal" onclick="closeDetailOutside(event)">
+    <div class="modal-box detail-box">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <div class="modal-icon-wrap">📋</div>
+                <h2 id="detail-title">تفاصيل المهمة</h2>
+            </div>
+            <button class="modal-close" onclick="closeDetailModal()">✕</button>
+        </div>
+        <div class="modal-body" id="detail-body"></div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeDetailModal()">إغلاق</button>
+            <button class="btn-save"   onclick="editFromDetail()">✏️ تعديل</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="db.js"></script>
+<script src="team-tasks.js" defer></script>
+</body>
+</html>
