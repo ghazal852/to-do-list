@@ -8,7 +8,7 @@
 
 ---
 
-## 1. صفحة تسجيل الدخول (logIn.html)
+## 1. صفحة تسجيل الدخول (index.html)
 ```html
 <script src="db.js"></script>
 <!-- DB.login(email, password) → { success, uid, user, error } -->
@@ -95,7 +95,7 @@ function saveProfile(e) {
 // تسجيل الخروج
 function logout() {
     DB.logout();
-    window.location.href = 'logIn.html';
+    window.location.href = 'index.html';
 }
 ```
 

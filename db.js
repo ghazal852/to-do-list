@@ -303,7 +303,7 @@ const DB = (() => {
     //  GUARD
     // ============================================================
 
-    function requireAuth(redirectTo = 'logIn.html') {
+    function requireAuth(redirectTo = 'index.html') {
         if (!isLoggedIn()) {
             window.location.replace(redirectTo);
             return false;

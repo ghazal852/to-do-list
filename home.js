@@ -21,7 +21,7 @@ function init() {
 
     // 1. حماية — إذا ما في جلسة ارجع لتسجيل الدخول
     if (!DB.isLoggedIn()) {
-        window.location.href = 'logIn.html';
+        window.location.href = 'index.html';
         return;
     }
 

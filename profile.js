@@ -10,7 +10,7 @@ let isEditing = false;
 function init() {
     // ── حماية الصفحة ──
     if (!DB.isLoggedIn()) {
-        window.location.href = 'logIn.html';
+        window.location.href = 'index.html';
         return;
     }
 
@@ -22,7 +22,7 @@ function init() {
 
     // ── تحميل بيانات المستخدم من db.js ──
     const user = DB.getCurrentUser();
-    if (!user) { DB.logout(); window.location.href = 'logIn.html'; return; }
+    if (!user) { DB.logout(); window.location.href = 'index.html'; return; }
 
     loadUserData(user);
     loadNotifs();
@@ -260,7 +260,7 @@ function logout() {
 
     // ✅ 3. إعادة التوجيه لصفحة الدخول
     showToast('👋 تم تسجيل الخروج، إلى اللقاء!');
-    setTimeout(() => { window.location.href = 'logIn.html'; }, 800);
+    setTimeout(() => { window.location.href = 'index.html'; }, 800);
 }
 
 // إغلاق المودال بالنقر خارجه

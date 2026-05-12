@@ -8,7 +8,7 @@
 (function () {
     // إذا المستخدم غير مسجل دخول → أعِد التوجيه
     if (!DB.isLoggedIn()) {
-        window.location.replace('logIn.html');
+        window.location.replace('index.html');
     }
 
     // تطبيق الوضع المظلم المحفوظ للحساب

@@ -17,7 +17,7 @@ let ME = 'أنا';
 window.addEventListener('DOMContentLoaded', () => {
     // حماية الصفحة
     if (!DB.isLoggedIn()) {
-        window.location.href = 'logIn.html';
+        window.location.href = 'index.html';
         return;
     }
 
